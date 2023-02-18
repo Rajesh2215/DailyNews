@@ -1,14 +1,14 @@
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import HomeIcon from '../assets/svg/HomeIcon';
+import HomeIcon from '../../assets/svg/HomeIcon';
 import ProfileScreen from '../screens/ProfileScreen';
-import ProfileIcon from '../assets/svg/Profile';
+import ProfileIcon from '../../assets/svg/Profile';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Device from 'react-native-device-detection';
-import Selected from '../assets/svg/selected';
+import Selected from '../../assets/svg/selected';
 
 const BottomBar = (props: any) => {
   const height = wp(5.5);

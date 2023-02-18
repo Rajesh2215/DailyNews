@@ -28,6 +28,7 @@ import {
 import axios from 'axios';
 import { useEffect } from 'react';
 import { Routes } from './routes/routes';
+import SignupScreen from './src/screens/SignupScreen';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -67,7 +68,7 @@ function App(): JSX.Element {
   const fetchApi = async()=>{
     try {
       console.log('hey')
-      const res = await axios.get('http://169.254.204.146:5500')
+      const res = await axios.get('http://192.168.152.244:5500')
       console.log('Response ',res.data)
     } catch (error) {
       console.log(error)
@@ -77,6 +78,7 @@ function App(): JSX.Element {
     fetchApi();
   },[])
   return (
+    // <SignupScreen/>
       <Routes />
       // <BottomBar />
       // <Text>Jai Shri Ram</Text>
