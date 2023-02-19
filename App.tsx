@@ -8,7 +8,9 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
+  Alert,
   Button,
+  PermissionsAndroid,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -26,9 +28,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
-import { useEffect } from 'react';
-import { Routes } from './routes/routes';
+import {useEffect} from 'react';
+import {Routes} from './routes/routes';
 import SignupScreen from './src/screens/SignupScreen';
+// import CustomHeader from './src/components/CustomHeader';
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -65,23 +68,49 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  const fetchApi = async()=>{
+  const fetchApi = async () => {
     try {
-      console.log('hey')
-      const res = await axios.get('http://192.168.152.244:5500')
-      console.log('Response ',res.data)
+      console.log('hey');
+      const res = await axios.get('http://192.168.152.244:5500');
+      console.log('Response ', res.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-  useEffect(()=>{
+  };
+  useEffect(() => {
     fetchApi();
-  },[])
+  }, []);
   return (
-    // <SignupScreen/>
+    <>
+      {/* <StatusBar backgroundColor="#30C0E9" barStyle="dark-content" /> */}
       <Routes />
-      // <BottomBar />
-      // <Text>Jai Shri Ram</Text>
+    </>
+    // <BottomBar />
+    // <Text>Jai Shri Ram</Text>
   );
 }
 export default App;
+
+// export async function request_location_runtime_permission() {
+ 
+//   try {
+//     const granted = await PermissionsAndroid.request(
+//       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//       // {
+//       //   'title': 'ReactNativeCode Location Permission',
+//       //   'message': 'ReactNativeCode App needs access to your location '
+//       // }
+//     )
+//     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+ 
+//       Alert.alert("Location Permission Granted.");
+//     }
+//     else {
+ 
+//       Alert.alert("Location Permission Not Granted");
+ 
+//     }
+//   } catch (err) {
+//     console.warn(err)
+//   }
+// }

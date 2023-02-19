@@ -2,7 +2,6 @@ import {
   View,
   Text,
   TextInput,
-  StatusBar,
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
@@ -113,7 +112,6 @@ const SignupScreen = (props: any) => {
   // const navigation = useNavigation()
   return (
     <>
-      <StatusBar backgroundColor="#30C0E9" barStyle="dark-content" />
       <ScrollView keyboardShouldPersistTaps={'always'}>
         <SafeAreaView style={{flex: 1}}>
           {isShow && <LoginSuccess text={'User Registerd Succesffuly'} />}
@@ -266,7 +264,7 @@ const SignupScreen = (props: any) => {
                 {/* // </View>} */}
                 <View>
                   <Button
-                    title="Submit"
+                    text="Submit"
                     action={() => {
                       handleSubmit();
                     }}
