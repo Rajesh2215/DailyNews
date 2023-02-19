@@ -12,7 +12,6 @@ const HomeScreen = (props: any,navigation: any) => {
       <Button
         title={'Linking'}
         action={() => {
-          console.log('working');
           props.navigation.navigate('LoginScreen');
         }}
       />
