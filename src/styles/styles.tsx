@@ -4,6 +4,18 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    padding: 16,
+    paddingTop: 100,
+    marginBottom:hp(10)
+  },
+  listItem: {
+    backgroundColor: 'orange',
+    borderWidth: 1,
+    borderColor: '#333',
+    padding: 25,
+  },
   lineStyle: {
     borderWidth: 0.2,
     borderColor: 'black',
@@ -24,13 +36,13 @@ const styles = StyleSheet.create({
     lineHeight: hp(2),
     fontSize: hp(2.5),
     fontWeight: 'bold',
-    justifyContent:'flex-start'
+    justifyContent: 'flex-start',
     // alignItems:'center'
   },
-  errorText:{
-    marginTop:hp(2),
-    alignSelf:'center',
-    color:'red'
+  errorText: {
+    marginTop: hp(2),
+    alignSelf: 'center',
+    color: 'red',
   },
   customToastContainer: {
     width: wp(90),
@@ -43,9 +55,9 @@ const styles = StyleSheet.create({
     borderRadius: wp(5),
     marginBottom: hp(3),
     flexDirection: 'row',
-    marginTop:hp(2),
-    marginHorizontal:wp(5),
-    color:'black'
+    marginTop: hp(2),
+    marginHorizontal: wp(5),
+    color: 'black',
   },
   customToastText: {
     justifyContent: 'center',
