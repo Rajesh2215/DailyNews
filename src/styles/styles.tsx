@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     padding: 16,
-    paddingTop: 100,
+    paddingTop: hp(2),
     marginBottom:hp(10)
   },
   listItem: {

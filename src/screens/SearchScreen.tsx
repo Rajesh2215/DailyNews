@@ -5,7 +5,10 @@ import {
   RefreshControl,
   FlatList,
   Image,
+  TouchableOpacity,
+  Linking, Alert
 } from 'react-native';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn'
 import React, {useEffect, useRef, useState} from 'react';
 import BottomBar from '../components/BottomBar';
 import {fetchNews} from '../services/appservices';
@@ -31,23 +34,48 @@ const SearchScreen = (props: any) => {
       console.log('error', error);
     }
   };
-  data.map(e => {
-    console.log(e.author);
-  });
+  // data.map(e => {
+  //   console.log(e.author);
+  // });
   console.log('load', load);
   useEffect(() => {
     res();
     console.log('working useffect');
   }, []);
   
+  const open =async (url:any)=>{
+    console.log('url', url)
+    if (await InAppBrowser.isAvailable()) {
+      console.log('Inappbrowser available')
+      const result = await InAppBrowser.open(url,{
+        showTitle: true,
+        toolbarColor: '#6200EE',
+        navigationBarColor: 'black',
+        animations: {
+          startEnter: 'slide_in_right',
+          startExit: 'slide_out_left',
+          endEnter: 'slide_in_left',
+          endExit: 'slide_out_right'
+        },
+        enableDefaultShare: true,
+        forceCloseOnRedirection: false,
+      })
+    }
+    else Linking.openURL(url)
+  }
   const renderItem = ({item}) => (
+    
     <View>
       <Image
         source={{uri: item.urlToImage}}
-        style={{width: 400, height: 400}}
+        style={{width: wp(100), height: hp(35),marginTop:hp(2)}}
       />
-      <Text>{item.author}</Text>
-      <Text>{item.description}</Text>
+      <Text style={{fontWeight:'600',color:'black',lineHeight:hp(3),fontSize:hp(3),marginTop:hp(1)}}>{item.title}</Text>
+      <Text style={{marginTop:hp(2),fontSize:hp(3)}}>{(item.content).substring(0,200)}<TouchableOpacity><Text style={{color:'blue'}} onPress={()=>open(item.url)} >Read More</Text></TouchableOpacity></Text>
+      {/* <Text style={{marginTop:hp(2)}}>{item.content}</Text> */}
+      <TouchableOpacity>
+      {/* <Text>{item.url}</Text> */}
+      </TouchableOpacity>
     </View>
   );
   return (
