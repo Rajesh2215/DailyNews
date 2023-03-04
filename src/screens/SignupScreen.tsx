@@ -22,6 +22,7 @@ import * as Yup from 'yup';
 import {compose} from 'recompose';
 import {TextField} from 'react-native-material-textfield';
 import LoginSuccess from '../components/LoginSuccess';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface FormValues {
   username: string;
   email: string;
@@ -100,6 +101,8 @@ const SignupScreen = (props: any) => {
     const resp = await register(req);
     setIsShow(true);
     console.log('resp', resp.data);
+    await AsyncStorage.setItem('token',resp.data.access_token)
+    await AsyncStorage.setItem('email',req.email)
     props.navigation.navigate('LoginScreen')
   };
 
@@ -269,6 +272,10 @@ const SignupScreen = (props: any) => {
                       handleSubmit();
                     }}
                   />
+                </View>
+
+                <View style={{alignSelf:'center'}}>
+                  <Text>Already have an account?<TouchableOpacity><Text style={{color:'blue'}} onPress={()=>{props.navigation.navigate('LoginScreen')}}>Login</Text></TouchableOpacity></Text>
                 </View>
               </>
             )}

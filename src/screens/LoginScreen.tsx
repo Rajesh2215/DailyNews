@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, TextInput} from 'react-native';
 import {RootStackParamList} from '../../routes/routes';
 import {NavigationContainer} from '@react-navigation/native';
@@ -13,6 +13,7 @@ import {
 } from 'react-native-responsive-screen';
 import {login} from '../services/appservices';
 import LoginSuccess from '../components/LoginSuccess';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface FormValues {
   email: string;
@@ -35,20 +36,31 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = async (values: FormValues) => {
     console.log('Login ');
+    const token = await AsyncStorage.getItem('token')
+    
     let req = {
       email: values.email,
       password: values.password,
+      access_token:token
     };
     const resp = await login(req);
     console.log('resp', resp.data);
+    console.log('resp', resp.data.access_token)
     if (resp?.data?.response?.error) {
       setError(resp?.data?.response?.message);
       return resp
     }
+    await AsyncStorage.setItem('token',resp.data.access_token)
+    await AsyncStorage.setItem('email',req.email)
     setIsShow(true);
     props.navigation.navigate('HomeScreen')
   };
 
+  
+
+  useEffect(()=>{
+    fetchUser()
+  })
   return (
     <>
       {isShow && <LoginSuccess text={'User Loggged In Succesffuly'} />}
