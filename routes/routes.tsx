@@ -9,14 +9,16 @@ import ProfileScreen from '../src/screens/ProfileScreen';
 import SearchScreen from '../src/screens/SearchScreen';
 import LoginScreen from '../src/screens/LoginScreen';
 import {useSelector} from 'react-redux';
+import CustomHeader from '../src/components/CustomHeader';
 export const navigationRef = React.createRef();
 
 export type RootStackParamList = {
-  HomeScreen: {apiCall:boolean};
+  HomeScreen: {apiCall: boolean};
   SearchScreen: any;
   ProfileScreen: any;
   SignupScreen: any;
   LoginScreen: any;
+  CustomHeader: any;
 };
 
 export const Routes = () => {
@@ -43,6 +45,13 @@ export const Routes = () => {
             <stack.Screen name="HomeScreen" component={HomeScreen} />
             <stack.Screen name="SearchScreen" component={SearchScreen} />
             <stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <stack.Screen
+              name="CustomHeader"
+              component={CustomHeader}
+              options={({navigation}) => ({
+                header: () => <CustomHeader navigation={navigation} />,
+              })}
+            />
           </>
         )}
         <stack.Screen name="LoginScreen" component={LoginScreen} />
