@@ -26,7 +26,7 @@ const BottomBar = (props: any) => {
   ];
   return (
     <View style={Device.isTablet ? styles.tabBar : styles.bar}>
-      {buttonData.map((data, index) => {
+      {buttonData.map((data: { route: any; icon: any; }, index: React.Key | null | undefined) => {
         return (
           <TouchableOpacity
             key={index}

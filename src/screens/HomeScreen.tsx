@@ -4,7 +4,9 @@ import Button from '../components/Button';
 import BottomBar from '../components/BottomBar';
 import Geolocation from '@react-native-community/geolocation';
 import CustomHeader from '../components/CustomHeader';
-const HomeScreen = (props: any,navigation: any) => {
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const HomeScreen =(props: any) => {
   
   // useEffect(() => {
   //   console.log('inside usefect')
@@ -21,9 +23,9 @@ const HomeScreen = (props: any,navigation: any) => {
   return (
     <>
     <CustomHeader/>
-      <View>
-        {/* <Text>HomeScreen</Text> */}
-      </View>
+      {/* <View>
+        <Text>HomeScreen</Text>
+      </View> */}
       {/* <Button
         title={'Linking'}
         action={() => {

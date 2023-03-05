@@ -31,6 +31,9 @@ import axios from 'axios';
 import {useEffect} from 'react';
 import {Routes} from './routes/routes';
 import SignupScreen from './src/screens/SignupScreen';
+import { Provider } from 'react-redux';
+import { persistor, store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 // import CustomHeader from './src/components/CustomHeader';
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -70,7 +73,6 @@ function App(): JSX.Element {
   };
   const fetchApi = async () => {
     try {
-      console.log('hey');
       const res = await axios.get('http://192.168.152.244:5500');
       console.log('Response ', res.data);
     } catch (error) {
@@ -83,7 +85,11 @@ function App(): JSX.Element {
   return (
     <>
       {/* <StatusBar backgroundColor="#30C0E9" barStyle="dark-content" /> */}
+      <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
       <Routes />
+      </PersistGate>
+      </Provider>
     </>
     // <BottomBar />
     // <Text>Jai Shri Ram</Text>

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import {RootStackParamList} from '../../routes/routes';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomBar from '../components/BottomBar';
@@ -14,12 +14,16 @@ import {
 import {login} from '../services/appservices';
 import LoginSuccess from '../components/LoginSuccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {loginSuccess, LOGIN_SUCCESS} from '../../redux/action';
 
 interface FormValues {
   email: string;
   password: string;
 }
 const LoginScreen = (props: any) => {
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.myReducer);
   const [error, setError] = useState('');
   const [isShow, setIsShow] = useState(false);
   const initialValues: FormValues = {
@@ -36,31 +40,29 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = async (values: FormValues) => {
     console.log('Login ');
-    const token = await AsyncStorage.getItem('token')
-    
+    // const token = await AsyncStorage.getItem('token')
+
     let req = {
       email: values.email,
       password: values.password,
-      access_token:token
+      access_token: user.user,
     };
     const resp = await login(req);
-    console.log('resp', resp.data);
-    console.log('resp', resp.data.access_token)
     if (resp?.data?.response?.error) {
       setError(resp?.data?.response?.message);
-      return resp
+      return resp;
     }
-    await AsyncStorage.setItem('token',resp.data.access_token)
-    await AsyncStorage.setItem('email',req.email)
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: {
+        user: resp.data.access_token,
+      },
+    });
+
     setIsShow(true);
-    props.navigation.navigate('HomeScreen')
+    props.navigation.navigate('HomeScreen');
   };
 
-  
-
-  useEffect(()=>{
-    fetchUser()
-  })
   return (
     <>
       {isShow && <LoginSuccess text={'User Loggged In Succesffuly'} />}
@@ -114,6 +116,20 @@ const LoginScreen = (props: any) => {
                   handleSubmit();
                 }}
               />
+            </View>
+            <View style={{alignSelf: 'center'}}>
+              <Text>
+                Dont' have an account?
+                <TouchableOpacity>
+                  <Text
+                    style={{color: 'blue'}}
+                    onPress={() => {
+                      props.navigation.navigate('SignupScreen');
+                    }}>
+                    SignUp
+                  </Text>
+                </TouchableOpacity>
+              </Text>
             </View>
           </>
         )}

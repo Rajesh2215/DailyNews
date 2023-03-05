@@ -22,7 +22,10 @@ import * as Yup from 'yup';
 import {compose} from 'recompose';
 import {TextField} from 'react-native-material-textfield';
 import LoginSuccess from '../components/LoginSuccess';
+import { loginSuccess } from '../../redux/action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { LOGIN_SUCCESS } from '../../redux/action';
 interface FormValues {
   username: string;
   email: string;
@@ -45,6 +48,8 @@ const SignupScreen = (props: any) => {
   // const [age, setAge] = useState('');
   const [error, setError] = useState(false);
   const [isShow, setIsShow] = useState(false);
+  const dispatch = useDispatch()
+
   const initialValues: FormValues = {
     username: '',
     email: '',
@@ -72,12 +77,9 @@ const SignupScreen = (props: any) => {
     
   });
 
-  // const handleSubmit = (values: FormValues) => {
-  //   console.log('values', values);
-  // };
+
 
   const handleSubmit = async (values: FormValues) => {
-    console.log('handlre');
     if (parseInt(values.age) < 10) {
       console.log('age', values.age);
       setError(true);
@@ -99,10 +101,15 @@ const SignupScreen = (props: any) => {
       password: values.password,
     };
     const resp = await register(req);
+
     setIsShow(true);
-    console.log('resp', resp.data);
-    await AsyncStorage.setItem('token',resp.data.access_token)
-    await AsyncStorage.setItem('email',req.email)
+    
+    dispatch({
+      type: LOGIN_SUCCESS,
+      payload: {
+        user: resp.data.access_token,
+      },
+    });
     props.navigation.navigate('LoginScreen')
   };
 
@@ -112,7 +119,6 @@ const SignupScreen = (props: any) => {
     }, 3000);
   }, [isShow]);
 
-  // const navigation = useNavigation()
   return (
     <>
       <ScrollView keyboardShouldPersistTaps={'always'}>

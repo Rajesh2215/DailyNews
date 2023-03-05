@@ -34,17 +34,12 @@ const SearchScreen = (props: any) => {
       console.log('error', error);
     }
   };
-  // data.map(e => {
-  //   console.log(e.author);
-  // });
-  console.log('load', load);
+;
   useEffect(() => {
     res();
-    console.log('working useffect');
   }, []);
   
   const open =async (url:any)=>{
-    console.log('url', url)
     if (await InAppBrowser.isAvailable()) {
       console.log('Inappbrowser available')
       const result = await InAppBrowser.open(url,{
