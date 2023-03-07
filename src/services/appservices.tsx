@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios';
 
-const apiUrl = `http://192.168.11.244:5500`
+const apiUrl = `http://192.168.43.2:5500`
 
 export const register = async (req: { name: string; email: string; phone: string; gender: string; age: string; password: string; }) =>{
     console.log('inside axios')
@@ -15,8 +15,14 @@ export const login = async (req: { email: string; password: string; }) =>{
     return resp
 }
 
-export const fetchNews = async() =>{
-    console.log('On the way to backend for requests')
-    const resp =await axios.post(`${apiUrl}/news/fetchNews`)
+export const fetchNews = async(country: string | undefined) =>{
+    console.log('On the way to backend for requests',country)
+    const resp =await axios.post(`${apiUrl}/news/fetchNews`,country)
+    return resp
+}
+
+export const CData = async() =>{
+    console.log('Going to get country data')
+    const resp =await axios.post(`${apiUrl}/news/country`)
     return resp
 }

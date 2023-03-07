@@ -39,8 +39,9 @@ const CustomHeader = (props: any) => {
         <View
           style={{
             justifyContent: 'flex-end',
-            width: wp(55),
+            width: wp(45),
             margin: wp(2),
+            marginTop:hp(-2),
             alignItems: 'flex-end',
           }}>
           <Bell />
