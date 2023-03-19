@@ -11,12 +11,17 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import HomeIcon from '../../assets/svg/HomeIcon';
 import {useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../redux/action';
+import Delete from '../../assets/svg/Delete';
+import { DeleteUser } from '../services/appservices';
+
 const CustomHeader = (props: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const user = useSelector(state => state.myReducer);
+  console.log('user', user.data.email)
   return (
     <>
       <View style={{width: wp(100), margin: wp(5), flexDirection: 'row'}}>
@@ -28,7 +33,6 @@ const CustomHeader = (props: any) => {
               } else {
                 setIsOpen(false);
               }
-              console.log('isOpen', isOpen);
             }}
           />
         </TouchableOpacity>
@@ -41,7 +45,7 @@ const CustomHeader = (props: any) => {
             justifyContent: 'flex-end',
             width: wp(45),
             margin: wp(2),
-            marginTop:hp(-2),
+            marginTop: hp(-2),
             alignItems: 'flex-end',
           }}>
           <Bell />
@@ -78,7 +82,7 @@ const CustomHeader = (props: any) => {
             <Text
               style={{marginLeft: wp(2), color: 'black'}}
               onPress={() => {
-                setIsOpen(false)
+                setIsOpen(false);
                 navigation.navigate('ProfileScreen');
               }}>
               ProfileScreen
@@ -89,7 +93,7 @@ const CustomHeader = (props: any) => {
             <Text
               style={{marginLeft: wp(2), color: 'black'}}
               onPress={() => {
-                setIsOpen(false)
+                setIsOpen(false);
                 navigation.navigate('SearchScreen');
               }}>
               SearchScreen
@@ -103,6 +107,19 @@ const CustomHeader = (props: any) => {
                 dispatch(logout());
               }}>
               Logout
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', marginTop: hp(3)}}>
+            <Delete />
+            <Text
+              style={{marginLeft: wp(2), color: 'black'}}
+              onPress={async() => {
+                  console.log('user.data.email', user.data.email)
+              await  DeleteUser(user.data.email)
+                dispatch(logout());
+                props.navigation.navigate('SignupScreen')
+              }}>
+              Delete Account
             </Text>
           </View>
         </View>

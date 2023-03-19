@@ -16,6 +16,8 @@ import LoginSuccess from '../components/LoginSuccess';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {loginSuccess, LOGIN_SUCCESS} from '../../redux/action';
+import {CData, fetchNews} from '../services/appservices';
+import {CDATA} from '../../redux/action';
 
 interface FormValues {
   email: string;
@@ -39,7 +41,6 @@ const LoginScreen = (props: any) => {
   });
 
   const handleSubmit = async (values: FormValues) => {
-    console.log('Login ');
     // const token = await AsyncStorage.getItem('token')
 
     let req = {
@@ -48,24 +49,27 @@ const LoginScreen = (props: any) => {
       access_token: user.user,
     };
     const resp = await login(req);
-    if (resp?.data?.response?.error) {
-      setError(resp?.data?.response?.message);
+    if (resp?.response?.data) {
+      setError(resp?.response?.data?.message);
       return resp;
     }
     dispatch({
       type: LOGIN_SUCCESS,
       payload: {
-        user: resp.data.access_token,
+        isAuthenticated:true,
+        user: resp?.data.access_token,
+        data:resp?.data
       },
+      
     });
-
     setIsShow(true);
+    setError('')
     props.navigation.navigate('HomeScreen');
   };
 
   return (
     <>
-      {isShow && <LoginSuccess text={'User Loggged In Succesffuly'} />}
+      {/* {isShow && <LoginSuccess text={'User Loggged In Succesffuly'} />} */}
 
       <View style={{alignItems: 'center'}}>
         <Text style={{fontSize: wp(7), color: 'black', marginTop: hp(5)}}>

@@ -1,13 +1,15 @@
 import {View, Text, Alert} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import Button from '../components/Button';
 import BottomBar from '../components/BottomBar';
 import Geolocation from '@react-native-community/geolocation';
 import CustomHeader from '../components/CustomHeader';
-import { useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const HomeScreen =(props: any) => {
-  
+import {CData} from '../services/appservices';
+import {CDATA} from '../../redux/action';
+import { heightPercentageToDP } from 'react-native-responsive-screen';
+const HomeScreen = (props: any) => {
   // useEffect(() => {
   //   console.log('inside usefect')
   //   Geolocation.getCurrentPosition(
@@ -19,19 +21,11 @@ const HomeScreen =(props: any) => {
   //       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
   //     );
   // },)
-  
+
   return (
     <>
-    <CustomHeader/>
-      {/* <View>
-        <Text>HomeScreen</Text>
-      </View> */}
-      {/* <Button
-        title={'Linking'}
-        action={() => {
-          props.navigation.navigate('LoginScreen');
-        }}
-      /> */}
+      <CustomHeader />
+      <Text style={{marginTop:heightPercentageToDP(10)}}>This is home</Text>
       <BottomBar active={'HomeScreen'} navigation={props.navigation} />
     </>
   );

@@ -17,14 +17,14 @@ import styles from '../styles/styles';
 import Eye from '../../assets/svg/Eye';
 import {useNavigation} from '@react-navigation/native';
 import Button from '../components/Button';
-import {register} from '../services/appservices';
+import {CData, CheckUser, register, SendOtp} from '../services/appservices';
 import * as Yup from 'yup';
 import {compose} from 'recompose';
 import {TextField} from 'react-native-material-textfield';
 import LoginSuccess from '../components/LoginSuccess';
-import { loginSuccess } from '../../redux/action';
+import { CDATA, loginSuccess } from '../../redux/action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LOGIN_SUCCESS } from '../../redux/action';
 interface FormValues {
   username: string;
@@ -37,15 +37,8 @@ interface FormValues {
 }
 
 const SignupScreen = (props: any) => {
-  // const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  // const [confirmpass, setConfirmpass] = useState('');
   const [showconfpass, setShowconfpass] = useState(false);
-  // const [username, setUsername] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [phone, setPhone] = useState('');
-  // const [gender, setGender] = useState('');
-  // const [age, setAge] = useState('');
   const [error, setError] = useState(false);
   const [isShow, setIsShow] = useState(false);
   const dispatch = useDispatch()
@@ -78,7 +71,6 @@ const SignupScreen = (props: any) => {
   });
 
 
-
   const handleSubmit = async (values: FormValues) => {
     if (parseInt(values.age) < 10) {
       console.log('age', values.age);
@@ -100,17 +92,18 @@ const SignupScreen = (props: any) => {
       age: values.age,
       password: values.password,
     };
-    const resp = await register(req);
 
     setIsShow(true);
-    
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: {
-        user: resp.data.access_token,
-      },
-    });
-    props.navigation.navigate('LoginScreen')
+    const check = await CheckUser(req)
+    console.log('check', check)
+    if(check?.statusCode==400){
+      setError(check?.message)
+    }
+    else{
+      const response =  SendOtp(req);
+      console.log('Sending Otp')
+      props.navigation.navigate('VerificationScreen',req)
+    }
   };
 
   useEffect(() => {
@@ -119,11 +112,35 @@ const SignupScreen = (props: any) => {
     }, 3000);
   }, [isShow]);
 
+  //This data fetchin gonly once and storing in store
+  let countries :any= [];
+  const CountryData = async () => {
+    try {
+      console.log('CountryData')
+      const Cdata = await CData();
+      Object.keys(Cdata.data).map(e => {
+        countries.push(e);
+      });
+      dispatch({
+        type: CDATA,
+        payload: {
+          data: countries,
+        },
+      });
+
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  useEffect(() => {
+    console.log('countryData useEffect')
+    CountryData()
+  },[])
   return (
     <>
       <ScrollView keyboardShouldPersistTaps={'always'}>
         <SafeAreaView style={{flex: 1}}>
-          {isShow && <LoginSuccess text={'User Registerd Succesffuly'} />}
+          {/* {isShow && <LoginSuccess text={'User Registerd Succesffuly'} />} */}
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: wp(7), color: 'black', marginTop: hp(5)}}>
               DailyNews
@@ -267,7 +284,7 @@ const SignupScreen = (props: any) => {
                         ? errors.password
                         : ''}
                     </Text>
-                    
+                    <Text style={styles.errorText}>{error}</Text>
                   </>
                 )}
                 {/* // </View>} */}
@@ -275,6 +292,7 @@ const SignupScreen = (props: any) => {
                   <Button
                     text="Submit"
                     action={() => {
+                      console.log('workingnnnnnn')
                       handleSubmit();
                     }}
                   />

@@ -22,6 +22,10 @@ import styles from '../styles/styles';
 import CustomHeader from '../components/CustomHeader';
 import SVGComponent from '../../assets/svg/DN';
 import SelectDropdown from 'react-native-select-dropdown';
+import { useDispatch } from 'react-redux';
+import {CDATA} from '../../redux/action';
+import {useSelector} from 'react-redux';
+
 // import SwipeableFlatList from 'react-native-swipeable-list'
 const SearchScreen = (props: any) => {
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -31,63 +35,9 @@ const SearchScreen = (props: any) => {
   const [imageDimensions, setImageDimensions] = useState(null);
   const [imagePress, setImagePress] = useState(false);
   const [country, setCountry] = useState('India');
-  // const [countries, setSountries] = useState('')
-  const countries = [
-    'Australia',
-    'Argentina',
-    'Austria',
-    'Belgium',
-    'Brazil',
-    'Bulgaria',
-    'UAE',
-    'Canada',
-    'China',
-    'Colombia',
-    'Cuba',
-    'Czechia',
-    'Switzerland',
-    'Egypt',
-    'France',
-    'Germany',
-    'Greece',
-    'Hungary',
-    'UK',
-    'India',
-    'Indonesia',
-    'Ireland',
-    'Israel',
-    'Italy',
-    'Japan',
-    'Korea',
-    'Latvia',
-    'Lithuania',
-    'Malaysia',
-    'Mexico',
-    'Morocco',
-    'Nauru',
-    'Netherlands',
-    'Nigeria',
-    'Philippines',
-    'Poland',
-    'Portugal',
-    'Russia',
-    'Serbia',
-    'Singapore',
-    'Slovakia',
-    'Slovenia',
-    'Sweden',
-    'Taiwan',
-    'Thailand',
-    'Turkey',
-    'USA',
-    'Ukraine',
-    'Venezuela',
-    'HongKong',
-    'SaudiArabia',
-    'SouthAfrica',
-    'NewZealand',
-    'Romania',
-  ];
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.myReducer);
+  const countries = user.cdata;
   const res = async (country: string | undefined) => {
     try {
       const resp = await fetchNews(country);
@@ -100,51 +50,18 @@ const SearchScreen = (props: any) => {
     }
   };
 
-  // const CountryData = async()=>{
-  //   try{
-  //     console.log('Country Data')
-  //     const Cdata = await CData()
-  //     // console.log('data', Cdata.data)
-  //     Object.keys(Cdata.data).map((e)=>{
-  //       console.log('e', e)
-  //       setSountries(e.slice(0,10))
-  //     })
-  //   }
-  //   catch(error){
-  //     console.log('error', error)
-  //   }
-  // }
-
-  // useEffect(async()=>{
-  //   await CountryData()
-  // },[])
-  // useEffect(()=>{
-  //   console.log('UseEffect 1')
-  //   const res = async ()=>{
-  //     const data = await CountryData()
-  //     // return data
-  //   }
-  //   // return res
-  // },[])
 
   useEffect(() => {
-    res(country);
-  }, []);
-
-  useEffect(() => {
-    console.log('country', country);
     res(country);
   }, [country]);
 
   const handleScroll = (event: {
     nativeEvent: {contentOffset: any; contentSize: any; layoutMeasurement: any};
   }) => {
-    console.log('Handling Scroll');
     const {contentOffset, contentSize, layoutMeasurement} = event.nativeEvent;
 
     // Calculate the maximum scroll position based on the content size and the layout measurement
     const maxScrollPosition = contentSize.height - layoutMeasurement.height;
-    console.log('SIZES', contentOffset.y, ' ', maxScrollPosition);
     const epsilon = 0.1;
     // If the user has scrolled to the bottom, hide the bottom navigation bar
     if (contentOffset.y >= maxScrollPosition - epsilon) {
@@ -178,7 +95,6 @@ const SearchScreen = (props: any) => {
     <View>
       <TouchableOpacity
         onPress={() => {
-          console.log('Click on Image');
           setShowBottomBar(!showBottomBar);
           setImagePress(!imagePress);
         }}>
@@ -240,7 +156,7 @@ const SearchScreen = (props: any) => {
   );
   return (
     <>
-      <ScrollView
+      {/* <ScrollView
         onScroll={handleScroll}
         refreshControl={
           <RefreshControl
@@ -252,56 +168,56 @@ const SearchScreen = (props: any) => {
             }}
             refreshing={refresh}
           />
-        }>
-        <CustomHeader />
-        <View
-          style={{
-            // height: hp(5),
-            // width: wp(30),
-            backgroundColor: 'transparent',
-            alignSelf: 'flex-end',
+        }> */}
+      <CustomHeader />
+      <View
+        style={{
+          // height: hp(5),
+          // width: wp(30),
+          backgroundColor: 'transparent',
+          alignSelf: 'flex-end',
 
-            marginTop: hp(-3),
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <SelectDropdown
-            defaultButtonText="Country"
-            selectedRowStyle={{backgroundColor: '#269abe'}}
-            // rowStyle={{borderRadius:wp(25)}}
-            dropdownStyle={{
-              backgroundColor: '#e0f0f5',
-              borderRadius: wp(2),
-              // maxHeight: hp(20),
-            }}
-            // dropdownOverlayColor='red'
-            data={countries}
-            buttonStyle={{
-              backgroundColor: '#e0f0f5',
-              borderRadius: wp(30),
-              width: wp(30),
-              height: hp(5),
-              // marginLeft:wp(10)
-              marginHorizontal: wp(5),
-              borderColor: 'black',
-            }}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-              setCountry(selectedItem);
-            }}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              // text represented after item is selected
-              // if data array is an array of objects then return selectedItem.property to render after item is selected
-              return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-              // text represented for each item in dropdown
-              // if data array is an array of objects then return item.property to represent item in dropdown
-              return item;
-            }}
-          />
-        </View>
-        {/* <View
+          marginTop: hp(-3),
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <SelectDropdown
+          defaultButtonText="Country"
+          selectedRowStyle={{backgroundColor: '#269abe'}}
+          // rowStyle={{borderRadius:wp(25)}}
+          dropdownStyle={{
+            backgroundColor: '#e0f0f5',
+            borderRadius: wp(2),
+            // maxHeight: hp(20),
+          }}
+          // dropdownOverlayColor='red'
+          data={countries}
+          buttonStyle={{
+            backgroundColor: '#e0f0f5',
+            borderRadius: wp(30),
+            width: wp(30),
+            height: hp(5),
+            // marginLeft:wp(10)
+            marginHorizontal: wp(5),
+            borderColor: 'black',
+          }}
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index);
+            setCountry(selectedItem);
+          }}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            // text represented after item is selected
+            // if data array is an array of objects then return selectedItem.property to render after item is selected
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            // text represented for each item in dropdown
+            // if data array is an array of objects then return item.property to represent item in dropdown
+            return item;
+          }}
+        />
+      </View>
+      {/* <View
           style={{
             height: hp(5),
             width: wp(30),
@@ -316,30 +232,48 @@ const SearchScreen = (props: any) => {
           }}>
             <Text>Country</Text>
           </View> */}
-        <View style={{marginBottom: hp(2)}}>
-          {load && (
-            <View
-              style={{
-                height: hp(50),
-                width: wp(90),
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text>Loading...</Text>
-            </View>
-          )}
-          {!load && (
-            <FlatList
-              data={data}
-              style={styles.container}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderItem}
-            />
-          )}
-        </View>
-      </ScrollView>
+      <View style={{marginBottom: hp(2)}}>
+        {load && (
+          <View
+            style={{
+              height: hp(50),
+              width: wp(90),
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text>Loading...</Text>
+          </View>
+        )}
+        {!load && (
+          <FlatList
+            data={data}
+            style={styles.container}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            onRefresh={async () => {
+              setRefresh(true);
+              setLoad(true);
+              console.log('refresh');
+              res(country);
+            }}
+            refreshing={refresh}
+            // refreshControl={
+            //   <RefreshControl
+            //     onRefresh={async () => {
+            //       setRefresh(true);
+            //       setLoad(true);
+            //       console.log('refresh');
+            //       res(country);
+            //     }}
+            //     refreshing={refresh}
+            //   />
+            // }
+          />
+        )}
+      </View>
+      {/* </ScrollView> */}
       {showBottomBar && (
         <BottomBar active={'SearchScreen'} navigation={props.navigation} />
       )}

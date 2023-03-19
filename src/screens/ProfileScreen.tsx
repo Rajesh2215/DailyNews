@@ -13,7 +13,6 @@ const ProfileScreen = (props: any) => {
   const [hideHeader, setHideHeader] = useState(false);
   const dispatch = useDispatch();
   const handleTap = () => {
-    console.log('Handling Tap');
     setHideBottomBar(!hideBottomBar);
     setHideHeader(!hideHeader)
   };
@@ -32,9 +31,8 @@ const ProfileScreen = (props: any) => {
           <Button
             title={'Linking'}
             action={() => {
-              console.log('working');
-              // dispatch(logout());
-              // props.navigation.navigate('SignupScreen');
+              dispatch(logout());
+              props.navigation.navigate('SignupScreen');
             }}
           />
         </View>

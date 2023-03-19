@@ -10,6 +10,7 @@ import SearchScreen from '../src/screens/SearchScreen';
 import LoginScreen from '../src/screens/LoginScreen';
 import {useSelector} from 'react-redux';
 import CustomHeader from '../src/components/CustomHeader';
+import VerificationScreen from '../src/screens/VerificationScreen';
 export const navigationRef = React.createRef();
 
 export type RootStackParamList = {
@@ -19,11 +20,11 @@ export type RootStackParamList = {
   SignupScreen: any;
   LoginScreen: any;
   CustomHeader: any;
+  VerificationScreen: any;
 };
 
 export const Routes = () => {
   const user = useSelector(state => state.myReducer);
-  console.log('isAuthenticated', user.isAuthenticated);
   const stack = createStackNavigator<RootStackParamList>();
   const linking: LinkingOptions = {
     prefixes: ['dailynews://'],
@@ -56,6 +57,10 @@ export const Routes = () => {
         )}
         <stack.Screen name="LoginScreen" component={LoginScreen} />
         <stack.Screen name="SignupScreen" component={SignupScreen} />
+        <stack.Screen
+          name="VerificationScreen"
+          component={VerificationScreen}
+        />
       </stack.Navigator>
     </NavigationContainer>
   );
