@@ -13,7 +13,7 @@ import {
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import React, {useEffect, useRef, useState} from 'react';
 import BottomBar from '../components/BottomBar';
-import {CData, fetchNews} from '../services/appservices';
+import {CData, fetchNews, saveNews} from '../services/appservices';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -22,10 +22,11 @@ import styles from '../styles/styles';
 import CustomHeader from '../components/CustomHeader';
 import SVGComponent from '../../assets/svg/DN';
 import SelectDropdown from 'react-native-select-dropdown';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {CDATA} from '../../redux/action';
 import {useSelector} from 'react-redux';
-
+import SaveIcon from '../../assets/svg/save';
+import { useIsFocused } from '@react-navigation/native';
 // import SwipeableFlatList from 'react-native-swipeable-list'
 const SearchScreen = (props: any) => {
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -35,13 +36,40 @@ const SearchScreen = (props: any) => {
   const [imageDimensions, setImageDimensions] = useState(null);
   const [imagePress, setImagePress] = useState(false);
   const [country, setCountry] = useState('India');
+  const [savedItem, setSavedItem] = useState(false);
+  const [savedArticles, setSavedArticles] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector(state => state.myReducer);
+  
+  const isFocused = useIsFocused();
+
+
+  const sendSavedNews = async(savedItem: boolean)=>{
+    try{
+      const res = await saveNews(savedItem)
+      console.log('res', res)
+    }
+    catch(error){
+      console.log('error', error)
+    }
+  }
+  // Logic that should only run when this screen is focused
+  useEffect(() => {
+    if (!isFocused && savedItem) {
+      sendSavedNews(savedItem)
+      setSavedArticles([])
+      setSavedItem(false)
+    } else {
+      console.log('User is not viewing this screen');
+      
+    }
+  }, [isFocused]);
   const countries = user.cdata;
   const res = async (country: string | undefined) => {
     try {
       const resp = await fetchNews(country);
-      setData(resp.data.articles);
+      const itemsWithIds = resp.data.articles.map((item: any, index: any) => ({ userEmail:user.data.email,...item, id: index }));
+      setData(itemsWithIds);
       setRefresh(false);
       setLoad(false);
       return resp;
@@ -49,7 +77,6 @@ const SearchScreen = (props: any) => {
       console.log('error', error);
     }
   };
-
 
   useEffect(() => {
     res(country);
@@ -91,33 +118,61 @@ const SearchScreen = (props: any) => {
       });
     } else Linking.openURL(url);
   };
+
   const renderItem = ({item}) => (
-    <View>
-      <TouchableOpacity
-        onPress={() => {
-          setShowBottomBar(!showBottomBar);
-          setImagePress(!imagePress);
-        }}>
-        {/* {console.log('item.urlToImage', item.urlToImage)} */}
-        {item.urlToImage == null ? (
-          <SVGComponent
+    <>
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            setShowBottomBar(!showBottomBar);
+            setImagePress(!imagePress);
+          }}>
+          {/* {console.log('item.urlToImage', item.urlToImage)} */}
+          {item.urlToImage == null ? (
+            <SVGComponent
+              style={{
+                width: wp(100),
+                height: imagePress == true ? hp(80) : hp(35),
+                marginTop: hp(2),
+                position: 'relative',
+              }}
+            />
+          ) : (
+            <Image
+              source={{uri: item.urlToImage}}
+              style={{
+                width: wp(100),
+                height: imagePress == true ? hp(80) : hp(35),
+                marginTop: hp(2),
+                position: 'relative',
+              }}
+            />
+          )}
+          <TouchableOpacity
             style={{
-              width: wp(100),
-              height: imagePress == true ? hp(80) : hp(35),
-              marginTop: hp(2),
-            }}
-          />
-        ) : (
-          <Image
-            source={{uri: item.urlToImage}}
-            style={{
-              width: wp(100),
-              height: imagePress == true ? hp(80) : hp(35),
-              marginTop: hp(2),
-            }}
-          />
-        )}
-        {/* <Image
+              position: 'absolute',
+              alignSelf: 'flex-end',
+              marginTop: hp(32),
+              width: wp(10),
+            }}>
+            <SaveIcon
+              onPress={() => {
+                setSavedItem(item)
+                console.log('item.id', item.id)
+                setSavedArticles(savedItems => {
+                  if (savedItems.includes(item.id)) {
+                    return savedItems.filter(id => id !== item.id);
+                  } else {
+                    return [...savedItems, item.id];
+                  }
+                });
+                
+              }}
+              data={savedArticles.includes(item.id)}
+            />
+          </TouchableOpacity>
+
+          {/* <Image
           source={{
             uri:
               item.urlToImage == null ? (
@@ -128,47 +183,36 @@ const SearchScreen = (props: any) => {
           }}
           style={{width: wp(100), height: imagePress == true ? hp(80) : hp(35)}}
         /> */}
-      </TouchableOpacity>
-      <Text
-        style={{
-          fontWeight: '600',
-          color: 'black',
-          lineHeight: hp(3),
-          fontSize: hp(3),
-          marginTop: hp(1),
-        }}>
-        {item.title}
-      </Text>
-      <Text style={{marginTop: hp(2), fontSize: hp(3)}}>
-        {/* {console.log('item.content.length au,us,de')} */}
-        {item.content == null
-          ? 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore voluptatum nesciunt numquam officia obcaecati non dignissimos? Nesciunt asperiores hic quam distinctio est magnam explicabo. Eaque repellat sint ipsum.'
-          : item.content.substring(0, 200)}
-        <TouchableOpacity>
-          <Text style={{color: 'blue'}} onPress={() => open(item.url)}>
-            Read More
-          </Text>
         </TouchableOpacity>
-      </Text>
-      {/* <Text style={{marginTop:hp(2)}}>{item.content}</Text> */}
-      <TouchableOpacity>{/* <Text>{item.url}</Text> */}</TouchableOpacity>
-    </View>
+        <Text
+          style={{
+            fontWeight: '600',
+            color: 'black',
+            lineHeight: hp(3),
+            fontSize: hp(3),
+            marginTop: hp(1),
+          }}>
+          {item.title}
+        </Text>
+        <Text style={{marginTop: hp(2), fontSize: hp(3)}}>
+          {/* {console.log('item.content.length au,us,de')} */}
+          {item.content == null
+            ? 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore voluptatum nesciunt numquam officia obcaecati non dignissimos? Nesciunt asperiores hic quam distinctio est magnam explicabo. Eaque repellat sint ipsum.'
+            : item.content.substring(0, 200)}
+          <TouchableOpacity>
+            <Text style={{color: 'blue'}} onPress={() => open(item.url)}>
+              Read More
+            </Text>
+          </TouchableOpacity>
+        </Text>
+        {/* <Text style={{marginTop:hp(2)}}>{item.content}</Text> */}
+        <TouchableOpacity>{/* <Text>{item.url}</Text> */}</TouchableOpacity>
+      </View>
+    </>
   );
+
   return (
     <>
-      {/* <ScrollView
-        onScroll={handleScroll}
-        refreshControl={
-          <RefreshControl
-            onRefresh={async () => {
-              setRefresh(true);
-              setLoad(true);
-              console.log('refresh');
-              res(country);
-            }}
-            refreshing={refresh}
-          />
-        }> */}
       <CustomHeader />
       <View
         style={{
@@ -259,17 +303,6 @@ const SearchScreen = (props: any) => {
               res(country);
             }}
             refreshing={refresh}
-            // refreshControl={
-            //   <RefreshControl
-            //     onRefresh={async () => {
-            //       setRefresh(true);
-            //       setLoad(true);
-            //       console.log('refresh');
-            //       res(country);
-            //     }}
-            //     refreshing={refresh}
-            //   />
-            // }
           />
         )}
       </View>
@@ -282,47 +315,3 @@ const SearchScreen = (props: any) => {
 };
 
 export default SearchScreen;
-
-{
-  /* <ScrollView
-        keyboardShouldPersistTaps={'always'}
-        contentContainerStyle={styles.container}
-        style={{margin: 20}}
-        refreshControl={
-          <RefreshControl
-            onRefresh={async () => {
-              setRefresh(true);
-              setLoad(true);
-              console.log('refresh');
-              res();
-            }}
-            refreshing={refresh}
-          />
-        }
-        showsVerticalScrollIndicator={false}>
-        <>
-          <Text style={{textAlign: 'center'}}>New News for you</Text>
-          {load && (
-            <View
-              style={{
-                height: hp(50),
-                width: wp(90),
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text>Loading...</Text>
-            </View>
-          )}
-          {!load &&
-            data.map((e, index) => {
-              return (
-                <View key={index}>
-                  <Text style={{textAlign: 'center'}}>{e.author}</Text>
-                </View>
-              );
-            })}
-        </>
-      </ScrollView> */
-}

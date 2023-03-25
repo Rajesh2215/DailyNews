@@ -14,14 +14,14 @@ import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../redux/action';
 import Delete from '../../assets/svg/Delete';
-import { DeleteUser } from '../services/appservices';
-
+import {DeleteUser} from '../services/appservices';
+import StarIcon from '../../assets/svg/star';
 const CustomHeader = (props: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector(state => state.myReducer);
-  console.log('user', user.data.email)
+  console.log('user', user.data.email);
   return (
     <>
       <View style={{width: wp(100), margin: wp(5), flexDirection: 'row'}}>
@@ -48,7 +48,12 @@ const CustomHeader = (props: any) => {
             marginTop: hp(-2),
             alignItems: 'flex-end',
           }}>
-          <Bell />
+          <TouchableOpacity>
+            <StarIcon onPress={()=>{
+              navigation.navigate('SavedScreen')
+            }}
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -113,11 +118,11 @@ const CustomHeader = (props: any) => {
             <Delete />
             <Text
               style={{marginLeft: wp(2), color: 'black'}}
-              onPress={async() => {
-                  console.log('user.data.email', user.data.email)
-              await  DeleteUser(user.data.email)
+              onPress={async () => {
+                console.log('user.data.email', user.data.email);
+                await DeleteUser(user.data.email);
                 dispatch(logout());
-                props.navigation.navigate('SignupScreen')
+                props.navigation.navigate('SignupScreen');
               }}>
               Delete Account
             </Text>

@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-const apiUrl = `http://192.168.79.244:5500`;
+const apiUrl = `http://192.168.43.244:5500`;
 
 export const register = async (req: {
   name: string;
@@ -94,3 +94,27 @@ export const DeleteUser = async (email: any) => {
   // console.log('resp', resp);
   return resp;
 };
+
+export const saveNews = async (item: any) => {
+  try {
+    console.log('Sending Saved News');
+    const resp = await axios.post(`${apiUrl}/news/savedNews`, item);
+    console.log('resp app 2', resp.status); //!Correct for success
+    return resp.status;
+  } catch (error) {
+    console.log('resp.response.data 4', error.response.status);
+    return error?.response?.status;
+  }
+};
+
+export const fetchSavedNews = async(email:any)=>{
+  try{
+    console.log('Going to get Saved News')
+    const resp = await axios.get(`${apiUrl}/news/fetchSavedNews`,email)
+    console.log('resp in fetchsavedNews', resp.data)
+    return resp.data
+  }
+  catch(error){
+    console.log('ERROR',error.response)
+  }
+}

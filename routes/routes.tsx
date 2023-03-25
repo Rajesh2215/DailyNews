@@ -11,6 +11,7 @@ import LoginScreen from '../src/screens/LoginScreen';
 import {useSelector} from 'react-redux';
 import CustomHeader from '../src/components/CustomHeader';
 import VerificationScreen from '../src/screens/VerificationScreen';
+import SavedScreen from '../src/screens/SavedScreen';
 export const navigationRef = React.createRef();
 
 export type RootStackParamList = {
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   LoginScreen: any;
   CustomHeader: any;
   VerificationScreen: any;
+  SavedScreen: any;
 };
 
 export const Routes = () => {
@@ -46,6 +48,7 @@ export const Routes = () => {
             <stack.Screen name="HomeScreen" component={HomeScreen} />
             <stack.Screen name="SearchScreen" component={SearchScreen} />
             <stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <stack.Screen name="SavedScreen" component={SavedScreen} />
             <stack.Screen
               name="CustomHeader"
               component={CustomHeader}
