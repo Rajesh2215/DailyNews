@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import SidebarIcon from '../assets/SidebarIcon';
 import LocationIcon from '../assets/LocationIcon';
 import Bell from '../assets/Bell';
@@ -10,7 +10,7 @@ import {
 } from 'react-native-responsive-screen';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import HomeIcon from '../../assets/svg/HomeIcon';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {logout} from '../../redux/action';
 import Delete from '../../assets/svg/Delete';
@@ -20,8 +20,15 @@ const CustomHeader = (props: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
   const user = useSelector(state => state.myReducer);
   console.log('user', user.data.email);
+  useEffect(() => {
+    if (!isFocused) {
+      setIsOpen(false);
+    }
+  }, [isFocused]);
+
   return (
     <>
       <View style={{width: wp(100), margin: wp(5), flexDirection: 'row'}}>
@@ -49,9 +56,10 @@ const CustomHeader = (props: any) => {
             alignItems: 'flex-end',
           }}>
           <TouchableOpacity>
-            <StarIcon onPress={()=>{
-              navigation.navigate('SavedScreen')
-            }}
+            <StarIcon
+              onPress={() => {
+                navigation.navigate('SavedScreen');
+              }}
             />
           </TouchableOpacity>
         </View>

@@ -56,7 +56,7 @@ const SearchScreen = (props: any) => {
   // Logic that should only run when this screen is focused
   useEffect(() => {
     if (!isFocused && savedItem) {
-      sendSavedNews(savedItem)
+      // sendSavedNews(savedItem)
       setSavedArticles([])
       setSavedItem(false)
     } else {
@@ -64,6 +64,7 @@ const SearchScreen = (props: any) => {
       
     }
   }, [isFocused]);
+
   const countries = user.cdata;
   const res = async (country: string | undefined) => {
     try {
@@ -157,6 +158,7 @@ const SearchScreen = (props: any) => {
             }}>
             <SaveIcon
               onPress={() => {
+                sendSavedNews(item)
                 setSavedItem(item)
                 console.log('item.id', item.id)
                 setSavedArticles(savedItems => {

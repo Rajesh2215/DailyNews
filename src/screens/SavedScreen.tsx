@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   RefreshControl,
@@ -8,7 +8,6 @@ import {
   View,
   Linking,
   FlatList,
-
 } from 'react-native';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
 import {
@@ -16,13 +15,20 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
+import BackIcon from '../../assets/svg/back';
 import SVGComponent from '../../assets/svg/DN';
 import SaveIcon from '../../assets/svg/save';
 // import {} from 'react-native-svg';
 import BottomBar from '../components/BottomBar';
 import CustomHeader from '../components/CustomHeader';
-import {fetchNews, fetchSavedNews} from '../services/appservices';
+import {
+  DeleteSavedNews,
+  fetchNews,
+  fetchSavedNews,
+} from '../services/appservices';
 import styles from '../styles/styles';
+import Delete from '../../assets/svg/Delete';
+import LoginSuccess from '../components/LoginSuccess';
 
 const SavedScreen = (props: any) => {
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -30,16 +36,15 @@ const SavedScreen = (props: any) => {
   const [load, setLoad] = useState(true);
   const [showBottomBar, setShowBottomBar] = useState(true);
   const [imagePress, setImagePress] = useState(false);
+  const [deleted, setDeleted] = useState(false);
   const user = useSelector(state => state.myReducer);
-
-  useEffect(()=>{
-    res(user.data.email)
-  },[])
+  console.log('user.data.email', user.data.email);
+  useEffect(() => {
+    res(user.data.email);
+  }, []);
   const res = async (email: string | undefined) => {
     try {
       const resp = await fetchSavedNews(email);
-      console.log('resp in saaved', resp)
-      //   const itemsWithIds = resp.data.articles.map((item: any, index: any) => ({ userEmail:user.data.email,...item, id: index }));
       setData(resp);
       setRefresh(false);
       setLoad(false);
@@ -96,12 +101,11 @@ const SavedScreen = (props: any) => {
               }}
             />
           )}
-          
         </TouchableOpacity>
         <Text
           style={{
             fontWeight: '600',
-            color: 'black',
+            color: '#30C0E9',
             lineHeight: hp(3),
             fontSize: hp(3),
             marginTop: hp(1),
@@ -124,22 +128,61 @@ const SavedScreen = (props: any) => {
       </View>
     </>
   );
+
+  const deleteData = async (email: any) => {
+    try {
+      console.log('EMAIL', email);
+      if(data.length==0){
+        return
+      }
+      console.log('data.length', data.length)
+      const resp = await DeleteSavedNews(email);
+      console.log('resp', resp);
+      if (resp == 201) {
+        setDeleted(true);
+      }
+      setTimeout(() => {
+        props.navigation.goBack();
+      }, 1000);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  console.log('data', data);
   return (
     <>
-      {/* <Text>Your Favourites</Text> */}
-      {/* <CustomHeader /> */}
+      {deleted && <LoginSuccess text={'Removed News From Favourites'} />}
       <View
         style={{
-          // height: hp(5),
-          // width: wp(30),
-          backgroundColor: 'transparent',
-          alignSelf: 'flex-end',
-
-          marginTop: hp(-3),
-          alignItems: 'center',
-          justifyContent: 'center',
+          padding: wp(3),
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: wp(95),
         }}>
+        <TouchableOpacity
+          onPress={() => {
+            props.navigation.goBack();
+          }}>
+          <BackIcon />
+        </TouchableOpacity>
+        <Text
+          style={{
+            borderBottomWidth: 3,
+            fontSize: hp(3),
+            fontWeight: '800',
+            color: '#000000',
+            borderBottomColor: '#30C0E9',
+            textAlign: 'center',
+          }}>
+          Your Favourites
+        </Text>
+        <Delete
+          onPress={() => {
+            deleteData(user.data.email);
+          }}
+        />
       </View>
+
       <View style={{marginBottom: hp(2)}}>
         {load && (
           <View
@@ -157,9 +200,7 @@ const SavedScreen = (props: any) => {
         {!load && (
           <FlatList
             data={data}
-            style={{width: '100%',
-            padding: 16,
-            paddingTop: hp(2)}}
+            style={{width: '100%', padding: 16}}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderItem}
             onRefresh={async () => {
@@ -170,6 +211,12 @@ const SavedScreen = (props: any) => {
             }}
             refreshing={refresh}
           />
+        )}
+
+        {data.length == 0 && (
+          <View style={{alignSelf:'center',marginTop:hp(30)}}>
+            <Text style={{color:'#000000',fontSize:hp(2.5)}}>Tap on the Icon to Save to BookMarks</Text>
+          </View>
         )}
       </View>
     </>
