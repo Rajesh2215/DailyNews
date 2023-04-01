@@ -1,5 +1,5 @@
-import {View, Text, StatusBar, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import {View, Text, StatusBar, TouchableOpacity, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import BottomBar from '../components/BottomBar';
 import Button from '../components/Button';
 import {useDispatch} from 'react-redux';
@@ -16,6 +16,8 @@ const ProfileScreen = (props: any) => {
     setHideBottomBar(!hideBottomBar);
     setHideHeader(!hideHeader)
   };
+
+  
   return (
     <>
       <TouchableOpacity
@@ -45,3 +47,4 @@ const ProfileScreen = (props: any) => {
 };
 
 export default ProfileScreen;
+

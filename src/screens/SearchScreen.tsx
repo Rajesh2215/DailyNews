@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  Share,
   Dimensions,
 } from 'react-native';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
@@ -26,8 +27,14 @@ import {useDispatch} from 'react-redux';
 import {CDATA} from '../../redux/action';
 import {useSelector} from 'react-redux';
 import SaveIcon from '../../assets/svg/save';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 // import SwipeableFlatList from 'react-native-swipeable-list'
+import Bookmarks from '../../assets/svg/Bookmarks';
+import ShareIcon from '../../assets/svg/Share';
+import Download from '../../assets/svg/Download';
+import RNFetchBlob from 'rn-fetch-blob';
+import Toast from 'react-native-simple-toast';
+
 const SearchScreen = (props: any) => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [data, setData] = useState([]);
@@ -38,30 +45,36 @@ const SearchScreen = (props: any) => {
   const [country, setCountry] = useState('India');
   const [savedItem, setSavedItem] = useState(false);
   const [savedArticles, setSavedArticles] = useState([]);
+  const [picture, setPicture] = useState('');
+  const [picName, setPicName] = useState('');
   const dispatch = useDispatch();
+  const [downloadImg, setDownloadImg] = useState('');
+  const isFirstRender = useRef(true);
   const user = useSelector(state => state.myReducer);
-  
+
   const isFocused = useIsFocused();
+  const screenWidth = Dimensions.get('screen').width;
+  const screenHeight = Dimensions.get('screen').height;
 
+  const sendSavedNews = async (savedItem: boolean) => {
+    try {
+      const res = await saveNews(savedItem);
+      console.log('res', res);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
 
-  const sendSavedNews = async(savedItem: boolean)=>{
-    try{
-      const res = await saveNews(savedItem)
-      console.log('res', res)
-    }
-    catch(error){
-      console.log('error', error)
-    }
-  }
   // Logic that should only run when this screen is focused
   useEffect(() => {
     if (!isFocused && savedItem) {
       // sendSavedNews(savedItem)
-      setSavedArticles([])
-      setSavedItem(false)
+      setSavedArticles([]);
+      setSavedItem(false);
+      setPicName('');
+      setPicture('');
     } else {
       console.log('User is not viewing this screen');
-      
     }
   }, [isFocused]);
 
@@ -69,7 +82,11 @@ const SearchScreen = (props: any) => {
   const res = async (country: string | undefined) => {
     try {
       const resp = await fetchNews(country);
-      const itemsWithIds = resp.data.articles.map((item: any, index: any) => ({ userEmail:user.data.email,...item, id: index }));
+      const itemsWithIds = resp.data.articles.map((item: any, index: any) => ({
+        userEmail: user.data.email,
+        ...item,
+        id: index,
+      }));
       setData(itemsWithIds);
       setRefresh(false);
       setLoad(false);
@@ -120,61 +137,106 @@ const SearchScreen = (props: any) => {
     } else Linking.openURL(url);
   };
 
-  const renderItem = ({item}) => (
-    <>
-      <View>
-        <TouchableOpacity
-          onPress={() => {
-            setShowBottomBar(!showBottomBar);
-            setImagePress(!imagePress);
-          }}>
-          {/* {console.log('item.urlToImage', item.urlToImage)} */}
-          {item.urlToImage == null ? (
-            <SVGComponent
-              style={{
-                width: wp(100),
-                height: imagePress == true ? hp(80) : hp(35),
-                marginTop: hp(2),
-                position: 'relative',
-              }}
-            />
-          ) : (
-            <Image
-              source={{uri: item.urlToImage}}
-              style={{
-                width: wp(100),
-                height: imagePress == true ? hp(80) : hp(35),
-                marginTop: hp(2),
-                position: 'relative',
-              }}
-            />
-          )}
-          <TouchableOpacity
-            style={{
-              position: 'absolute',
-              alignSelf: 'flex-end',
-              marginTop: hp(32),
-              width: wp(10),
-            }}>
-            <SaveIcon
-              onPress={() => {
-                sendSavedNews(item)
-                setSavedItem(item)
-                console.log('item.id', item.id)
-                setSavedArticles(savedItems => {
-                  if (savedItems.includes(item.id)) {
-                    return savedItems.filter(id => id !== item.id);
-                  } else {
-                    return [...savedItems, item.id];
-                  }
-                });
-                
-              }}
-              data={savedArticles.includes(item.id)}
-            />
-          </TouchableOpacity>
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false; // toggle flag after first render/mounting
+      return;
+    }
+    console.log('picName==>', picName, ' ', picture);
+    saveImageToPhone(downloadImg, picName);
+  }, [downloadImg, picName]);
 
-          {/* <Image
+  const renderItem = ({item}) => {
+    return (
+      <>
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              setShowBottomBar(!showBottomBar);
+              setImagePress(!imagePress);
+            }}>
+            {/* {console.log('item.urlToImage', item.urlToImage)} */}
+            {item.urlToImage == null ? (
+              <SVGComponent
+                style={{
+                  width: wp(100),
+                  height: imagePress == true ? hp(80) : hp(35),
+                  marginTop: hp(2),
+                  position: 'relative',
+                }}
+              />
+            ) : (
+              <Image
+                source={{uri: item.urlToImage}}
+                style={{
+                  width: wp(100),
+                  height: imagePress == true ? hp(80) : hp(35),
+                  marginTop: hp(2),
+                  position: 'relative',
+                }}
+              />
+            )}
+
+            <TouchableOpacity
+              style={{
+                position: 'absolute',
+                alignSelf: 'flex-end',
+                marginTop: hp(32),
+                width: wp(10),
+              }}>
+              <Bookmarks
+                onPress={() => {
+                  sendSavedNews(item);
+                  setSavedItem(item);
+                  console.log('item.id', item.id);
+                  setSavedArticles(savedItems => {
+                    if (savedItems.includes(item.id)) {
+                      Toast.show('Removed from Bookmarks', 1000);
+
+                      return savedItems.filter(id => id !== item.id);
+                    } else {
+                      Toast.show('Added to Bookmarks', 1000);
+
+                      return [...savedItems, item.id];
+                    }
+                  });
+                }}
+                data={savedArticles.includes(item.id)}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                marginTop: hp(-5),
+                alignSelf: 'flex-end',
+                marginRight: wp(15),
+              }}
+              onPress={() => {
+                onShare(item.url);
+              }}>
+              <ShareIcon />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                alignSelf: 'flex-end',
+                margin: wp(5),
+                position: 'absolute',
+                padding: wp(5),
+              }}
+              onPress={async () => {
+                console.log('pressed to download', picture);
+                console.log('item.urlToimage', item.urlToImage);
+                // setPicture(item.urlToImage);
+                setDownloadImg(item.urlToImage);
+                console.log('picture', picture);
+                const imageName = item.urlToImage.split('/').pop();
+                setPicName(imageName);
+                Toast.show('Downloading...', 1000);
+
+                //  await saveImageToPhone(picture, picName);
+              }}>
+              <Download />
+            </TouchableOpacity>
+            {/* <Image
           source={{
             uri:
               item.urlToImage == null ? (
@@ -185,36 +247,112 @@ const SearchScreen = (props: any) => {
           }}
           style={{width: wp(100), height: imagePress == true ? hp(80) : hp(35)}}
         /> */}
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontWeight: '600',
-            color: 'black',
-            lineHeight: hp(3),
-            fontSize: hp(3),
-            marginTop: hp(1),
-          }}>
-          {item.title}
-        </Text>
-        <Text style={{marginTop: hp(2), fontSize: hp(3)}}>
-          {/* {console.log('item.content.length au,us,de')} */}
-          {item.content == null
-            ? 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore voluptatum nesciunt numquam officia obcaecati non dignissimos? Nesciunt asperiores hic quam distinctio est magnam explicabo. Eaque repellat sint ipsum.'
-            : item.content.substring(0, 200)}
-          <TouchableOpacity>
-            <Text style={{color: 'blue'}} onPress={() => open(item.url)}>
-              Read More
-            </Text>
           </TouchableOpacity>
-        </Text>
-        {/* <Text style={{marginTop:hp(2)}}>{item.content}</Text> */}
-        <TouchableOpacity>{/* <Text>{item.url}</Text> */}</TouchableOpacity>
-      </View>
-    </>
-  );
+          <Text
+            style={{
+              fontWeight: '600',
+              color: 'black',
+              lineHeight: hp(3),
+              fontSize: hp(3),
+              marginTop: hp(2),
+            }}>
+            {item.title}
+          </Text>
+          <Text style={{marginTop: hp(2), fontSize: hp(3)}}>
+            {/* {console.log('item.content.length au,us,de')} */}
+            {item.content == null
+              ? 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore voluptatum nesciunt numquam officia obcaecati non dignissimos? Nesciunt asperiores hic quam distinctio est magnam explicabo. Eaque repellat sint ipsum.'
+              : item.content.substring(0, 200)}
+            <TouchableOpacity>
+              <Text style={{color: 'blue'}} onPress={() => open(item.url)}>
+                Read More
+              </Text>
+            </TouchableOpacity>
+          </Text>
+          {/* <Text style={{marginTop:hp(2)}}>{item.content}</Text> */}
+          <TouchableOpacity>{/* <Text>{item.url}</Text> */}</TouchableOpacity>
+        </View>
+      </>
+    );
+  };
+
+  const onShare = async (title: any) => {
+    try {
+      Toast.show('HEYYYYYYYYYYYYYYY...', 1000);
+
+      const result = await Share.share({
+        message: title,
+      });
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
+  const saveImageToPhone = async (imageUrl: string, imageName: string) => {
+    console.log('picture', picName, ' ', picture);
+
+    console.log('function worked', imageUrl);
+    try {
+      console.log('function called');
+      if (!imageUrl) {
+        console.log('Invalid imageUrl parameter');
+        return false;
+      }
+
+      const response = await RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'jpg',
+      }).fetch('GET', imageUrl);
+
+      console.log('1');
+      const filePath = response.path();
+      const options = {
+        type: 'photo',
+        album: 'MyApp',
+        photoFileName: imageName,
+      };
+
+      const res = await RNFetchBlob.fs.writeFile(
+        `${RNFetchBlob.fs.dirs.DownloadDir}/${imageName}`,
+        filePath,
+        'uri',
+      );
+
+      // setImagePress(false),
+      console.log('scanning file', res);
+      await RNFetchBlob.fs.scanFile([{path: filePath}]);
+      Toast.show('Image Downloaded Successfully', 1000);
+
+      console.log('Stored successfully');
+      return true;
+    } catch (error) {
+      console.log(error.message);
+      return false;
+    }
+  };
 
   return (
     <>
+      {picture.length > 0 && (
+        <View>
+          <TouchableOpacity
+            onPress={() => {
+              setImagePress(!imagePress);
+              setPicture('');
+              console.log('imagePress', imagePress);
+            }}>
+            <Image
+              source={{uri: picture}}
+              style={{
+                width: screenWidth,
+                height: screenHeight,
+                resizeMode: 'contain',
+                marginTop: hp(-10),
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
       <CustomHeader />
       <View
         style={{

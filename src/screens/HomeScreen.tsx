@@ -9,6 +9,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CData} from '../services/appservices';
 import {CDATA} from '../../redux/action';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
+import Bookmarks from '../../assets/svg/Bookmarks'
+import Download from '../../assets/svg/Download';
+
 const HomeScreen = (props: any) => {
   // useEffect(() => {
   //   console.log('inside usefect')
@@ -26,6 +29,8 @@ const HomeScreen = (props: any) => {
     <>
       <CustomHeader />
       <Text style={{marginTop:heightPercentageToDP(10)}}>This is home</Text>
+      {/* <Bookmarks/>
+      <Download /> */}
       <BottomBar active={'HomeScreen'} navigation={props.navigation} />
     </>
   );

@@ -4,6 +4,10 @@ import {
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 const styles = StyleSheet.create({
+  toast:{
+    backgroundColor:'#000000',
+    marginTop:hp(10)
+  },
   container: {
     width: '100%',
     padding: 16,
