@@ -81,7 +81,7 @@ function App(): JSX.Element {
   };
   useEffect(() => {
     fetchApi();
-    request_location_runtime_permission()
+    // request_location_runtime_permission()
   }, []);
   return (
     <>

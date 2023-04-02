@@ -35,7 +35,7 @@ import Download from '../../assets/svg/Download';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
 
-const SearchScreen = (props: any) => {
+const SearchScreen =React.memo((props) => {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [data, setData] = useState([]);
   const [load, setLoad] = useState(true);
@@ -452,6 +452,6 @@ const SearchScreen = (props: any) => {
       )}
     </>
   );
-};
+});
 
 export default SearchScreen;
