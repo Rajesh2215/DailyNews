@@ -34,6 +34,7 @@ import ShareIcon from '../../assets/svg/Share';
 import Download from '../../assets/svg/Download';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
+import BackIcon from '../../assets/svg/back';
 
 const SearchScreen =React.memo((props) => {
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -353,7 +354,14 @@ const SearchScreen =React.memo((props) => {
           </TouchableOpacity>
         </View>
       )}
-      <CustomHeader />
+      {/* <CustomHeader /> */}
+      <TouchableOpacity
+      style={{marginTop:hp(3),marginLeft:wp(5)}}
+          onPress={() => {
+            props.navigation.goBack();
+          }}>
+          <BackIcon />
+        </TouchableOpacity>
       <View
         style={{
           // height: hp(5),
@@ -366,7 +374,7 @@ const SearchScreen =React.memo((props) => {
           justifyContent: 'center',
         }}>
         <SelectDropdown
-          defaultButtonText="Country"
+          defaultButtonText="India"
           selectedRowStyle={{backgroundColor: '#269abe'}}
           // rowStyle={{borderRadius:wp(25)}}
           dropdownStyle={{
@@ -384,6 +392,8 @@ const SearchScreen =React.memo((props) => {
             // marginLeft:wp(10)
             marginHorizontal: wp(5),
             borderColor: 'black',
+            marginBottom:hp(1),
+            marginTop:hp(-2)
           }}
           onSelect={(selectedItem, index) => {
             console.log(selectedItem, index);
@@ -401,22 +411,7 @@ const SearchScreen =React.memo((props) => {
           }}
         />
       </View>
-      {/* <View
-          style={{
-            height: hp(5),
-            width: wp(30),
-            borderRadius: wp(30),
-            borderColor: 'black',
-            backgroundColor: 'red',
-            alignSelf: 'flex-end',
-            marginRight:wp(5),
-            marginTop:hp(-5),
-            alignItems:'center',
-            justifyContent:'center'
-          }}>
-            <Text>Country</Text>
-          </View> */}
-      <View style={{marginBottom: hp(2)}}>
+      <View >
         {load && (
           <View
             style={{
@@ -447,9 +442,9 @@ const SearchScreen =React.memo((props) => {
         )}
       </View>
       {/* </ScrollView> */}
-      {showBottomBar && (
+      {/* {showBottomBar && (
         <BottomBar active={'SearchScreen'} navigation={props.navigation} />
-      )}
+      )} */}
     </>
   );
 });

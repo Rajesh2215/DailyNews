@@ -10,9 +10,9 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    padding: 16,
-    paddingTop: hp(2),
-    marginBottom:hp(10)
+    padding: wp(2),
+    // paddingTop: hp(1),
+    // marginBottom:hp(10)
   },
   listItem: {
     backgroundColor: 'orange',

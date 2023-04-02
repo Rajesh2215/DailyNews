@@ -31,7 +31,17 @@ const CustomHeader = (props: any) => {
 
   return (
     <>
-      <View style={{width: wp(100), margin: wp(5), flexDirection: 'row'}}>
+      <View
+        style={{
+          // paddingHorizontal: wp(-4),
+          // alignItems: 'center',
+          width: wp(90),
+          margin: wp(5),
+          flexDirection: 'row',
+          backgroundColor: 'transparent',
+          // borderRadius: wp(4),
+          alignSelf: 'center',
+        }}>
         <TouchableOpacity>
           <SidebarIcon
             onPress={() => {

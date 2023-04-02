@@ -42,10 +42,11 @@ export const Routes = () => {
       <stack.Navigator
         screenOptions={{
           headerShown: false,
+          cardStyle: {backgroundColor: 'white'}
         }}>
         {user.isAuthenticated && (
           <>
-            <stack.Screen name="HomeScreen" component={HomeScreen} />
+            <stack.Screen name="HomeScreen" component={HomeScreen}/>
             <stack.Screen name="SearchScreen" component={SearchScreen} />
             <stack.Screen name="ProfileScreen" component={ProfileScreen} />
             <stack.Screen name="SavedScreen" component={SavedScreen} />

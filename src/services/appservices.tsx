@@ -137,4 +137,16 @@ export const DeleteSavedNews = async (email: any) => {
   } catch (error) {
     console.log('error.response.data', error.response.data);
   }
-};
+};  
+
+export const CategoryNews=async(category:any) =>{
+  try{
+    console.log('inside axios for category',category)
+    const resp = await axios.post(`${apiUrl}/news/categoryNews`, category)
+    // console.log('resp.data', resp)
+    return resp.data
+  }
+  catch(error){
+    console.log('error.response.data', error.response.data)
+  }
+}
