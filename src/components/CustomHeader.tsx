@@ -16,13 +16,15 @@ import {logout} from '../../redux/action';
 import Delete from '../../assets/svg/Delete';
 import {DeleteUser} from '../services/appservices';
 import StarIcon from '../../assets/svg/star';
+import Search from '../../assets/svg/Search'
+
 const CustomHeader = (props: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const user = useSelector(state => state.myReducer);
-  console.log('user', user.data.email);
+  // console.log('user', user.data.email);
   useEffect(() => {
     if (!isFocused) {
       setIsOpen(false);
@@ -112,7 +114,7 @@ const CustomHeader = (props: any) => {
             </Text>
           </View>
           <View style={{flexDirection: 'row', marginTop: hp(3)}}>
-            <ProfileIcon />
+            <Search />
             <Text
               style={{marginLeft: wp(2), color: 'black'}}
               onPress={() => {

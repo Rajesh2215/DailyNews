@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import publicIP from 'react-native-public-ip';
 
-const apiUrl = `http://192.168.28.244:5500`;
+const apiUrl = `http://192.168.45.244:3000`
 
 export const register = async (req: {
   name: string;
@@ -13,7 +13,7 @@ export const register = async (req: {
   password: string;
 }) => {
   try {
-    console.log('inside axios');
+    console.log('inside axios',apiUrl);
     const resp = await axios.post(`${apiUrl}/user/register`, req);
     return resp;
   } catch (error) {
@@ -23,16 +23,10 @@ export const register = async (req: {
 
 export const login = async (req: {email: string; password: string}) => {
   try {
-    publicIP()
-  .then(ip => {
-    console.log(ip);
-    // '47.122.71.234'
-  })
-  .catch(error => {
-    console.log(error);
-    // 'Unable to get IP address.'
-  });
-    console.log('inside axios for login');
+    
+    console.log('inside axios for login',apiUrl);
+    console.log('req', req)
+
     const resp = await axios.post(`${apiUrl}/user/login`, req);
     console.log('resp from backend', resp.data);
     return resp;
@@ -43,9 +37,14 @@ export const login = async (req: {email: string; password: string}) => {
 };
 
 export const fetchNews = async (country: string | undefined) => {
-  console.log('On the way to backend for requests', country);
-  const resp = await axios.post(`${apiUrl}/news/fetchNews`, country);
-  return resp;
+  try{
+
+    console.log('On the way to backend for requests', country);
+    const resp = await axios.post(`${apiUrl}/news/fetchNews`, country);
+    return resp;
+  }catch(error){
+    console.log('error.response.data', error.response.data)
+  }
 };
 
 export const CData = async () => {

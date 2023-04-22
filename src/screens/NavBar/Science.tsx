@@ -10,7 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import SVGComponent from '../../../assets/svg/DN';
 import Bookmarks from '../../../assets/svg/Bookmarks';
 import Toast from 'react-native-simple-toast';
-import ShareIcon from '../../../assets/svg/Share'
+import ShareIcon from '../../../assets/svg/ShareIcon'
 import Download from '../../../assets/svg/Download'
 import {useIsFocused} from '@react-navigation/native';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';

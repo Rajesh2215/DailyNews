@@ -138,7 +138,6 @@ const LoginScreen = (props: any) => {
           </>
         )}
       </Formik>
-      <BottomBar active={'HomeScreen'} navigation={props.navigation} />
     </>
   );
 };

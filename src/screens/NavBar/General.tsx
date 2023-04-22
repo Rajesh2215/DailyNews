@@ -13,7 +13,9 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import SVGComponent from '../../../assets/svg/DN';
 import Bookmarks from '../../../assets/svg/Bookmarks';
 import Toast from 'react-native-simple-toast';
-import ShareIcon from '../../../assets/svg/Share';
+import ShareIcon from '../../../assets/svg/ShareIcon';
+
+// import ShareIcon from '../../../assets/svg/Share';
 import Download from '../../../assets/svg/Download';
 import {useIsFocused} from '@react-navigation/native';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
@@ -185,15 +187,6 @@ const General = (props: any) => {
               style={{
                 position: 'absolute',
                 alignSelf: 'flex-end',
-                bottom: 0,
-                right: wp(10),
-              }}>
-              <Bookmarks data={true} />
-            </TouchableOpacity>
-            {/* <TouchableOpacity
-              style={{
-                position: 'absolute',
-                alignSelf: 'flex-end',
                 marginTop: hp(32),
                 width: wp(10),
               }}>
@@ -216,7 +209,7 @@ const General = (props: any) => {
                 }}
                 data={savedArticles.includes(item.id)}
               />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             <TouchableOpacity
               style={{
                 marginTop: hp(-5),
@@ -249,6 +242,17 @@ const General = (props: any) => {
               }}>
               <Download />
             </TouchableOpacity>
+            {/* <Image
+          source={{
+            uri:
+              item.urlToImage == null ? (
+                <SVGComponent width={50} height={50} />
+              ) : (
+                item.urlToImage
+              ),
+          }}
+          style={{width: wp(100), height: imagePress == true ? hp(80) : hp(35)}}
+        /> */}
           </TouchableOpacity>
           <Text
             style={{
@@ -280,6 +284,7 @@ const General = (props: any) => {
 
   return (
     <>
+      
       {/* <Bookmarks data={item}/> */}
       <View>
         {load && (

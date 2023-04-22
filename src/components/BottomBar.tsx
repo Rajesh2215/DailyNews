@@ -9,13 +9,13 @@ import {
 } from 'react-native-responsive-screen';
 import Device from 'react-native-device-detection';
 import Selected from '../../assets/svg/selected';
-
+import Search from '../../assets/svg/Search'
 const BottomBar = (props: any) => {
   const height = wp(5.5);
   const buttonData = [
     {icon: <HomeIcon height={height} />, route: 'HomeScreen'},
     {
-      icon: <HomeIcon height={height} />,
+      icon: <Search height={height} />,
       route: 'SearchScreen',
     },
 
@@ -64,14 +64,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: '10%',
-    bottom: '1%',
+    bottom: '2%',
     marginBottom:hp(-1),
     alignSelf: 'center',
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.04)',
+    // backgroundColor: 'rgba(0,0,0,0.04)',
+    backgroundColor:'#ddf4fb',
     height: wp(15),
     width: wp(100),
-    // borderRadius: 30,
+    borderRadius: wp(10),
+    // paddingVertical:hp(1)
+    paddingBottom:hp(6)
   },
   tabBar: {
     flexDirection: 'row',

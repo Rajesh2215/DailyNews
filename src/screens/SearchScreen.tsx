@@ -30,7 +30,7 @@ import SaveIcon from '../../assets/svg/save';
 import {useIsFocused} from '@react-navigation/native';
 // import SwipeableFlatList from 'react-native-swipeable-list'
 import Bookmarks from '../../assets/svg/Bookmarks';
-import ShareIcon from '../../assets/svg/Share';
+import ShareIcon from '../../assets/svg/ShareIcon';
 import Download from '../../assets/svg/Download';
 import RNFetchBlob from 'rn-fetch-blob';
 import Toast from 'react-native-simple-toast';
