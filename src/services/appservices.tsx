@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import publicIP from 'react-native-public-ip';
 
-const apiUrl = `http://192.168.45.244:3000`
+const apiUrl = `http://000.000.00.000:3000`   // use you local Ip here
 
 export const register = async (req: {
   name: string;
